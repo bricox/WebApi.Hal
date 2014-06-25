@@ -197,6 +197,18 @@ namespace WebApi.Hal
                         foreach (var item in halResourceList)
                             WriteHalResource(item, writer);
                 }
+                else if (property.IsNonSerialized() && typeof(IDictionary<string, object>).IsAssignableFrom(property.PropertyType))
+                {   //if I have a dictionary of items, when I want to loop of the items and serialize the child objects.
+                    var dictionary = property.GetValue(representation) as IDictionary<string, object>;
+                    foreach (var key in dictionary.Keys)
+                    {
+                        if (dictionary[key].GetType().IsValidBasicType())
+                        {
+                            writer.WriteElementString(key, dictionary[key].ToString());
+                        }
+                    }                    
+                }
+
             }
         }
 

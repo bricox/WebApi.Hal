@@ -16,6 +16,16 @@ namespace WebApi.Hal
                    && (property.PropertyType.IsValueType || property.PropertyType == typeof(string));
         }
 
+        public static bool IsValidBasicType(this Type type)
+        {
+            return type.Namespace == "System" && (type.IsValueType || type == typeof (string));
+        }
+
+        public static bool IsNonSerialized(this PropertyInfo property)
+        {
+            return !NonSerializedProperties.Contains(property.Name);
+        }
+
         public static bool IsGenericListOfApiResource(this Type type)
         {
             if (type.IsGenericType && typeof(IList).IsAssignableFrom(type))
